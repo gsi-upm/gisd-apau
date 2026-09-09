@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Laboratorio docente interactivo: del flujo clásico de Data Science al flujo basado en prompts con LLMs." />
+    <meta name="author" content="Carlos Á. Iglesias, Intelligent Systems Group, UPM" />
+    <meta name="copyright" content="© 2026 Carlos Á. Iglesias, Intelligent Systems Group, UPM" />
+    <title>PromptLab · De pandas a los LLMs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#laboratorio">Saltar al laboratorio</a>
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="PromptLab, inicio">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>Prompt<span>Lab</span></span>
+      </a>
+      <a class="upm-logo" href="https://www.upm.es/" target="_blank" rel="noopener" aria-label="Universidad Politécnica de Madrid">
+        <img src="assets/upm-logo.png" alt="Universidad Politécnica de Madrid" />
+      </a>
+      <nav aria-label="Navegación principal">
+        <a href="#laboratorio">Laboratorio</a>
+        <a href="#docencia">Solución</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Laboratorio interactivo · Clasificación</p>
+          <h1>El modelo ya no es<br />todo el <em>pipeline.</em></h1>
+          <p class="hero-lede">Compara dos maneras de resolver el mismo problema: entrenar un clasificador con variables estructuradas o diseñar instrucciones para un modelo de lenguaje.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#laboratorio">Empezar experimento <span>↓</span></a>
+            <span class="time-chip">◷ 20–30 min de clase</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Visualización del paso de datos a decisiones">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="data-card data-card-a"><b>income</b><span>€ 3,200</span></div>
+          <div class="data-card data-card-b"><b>debt_ratio</b><span>34%</span></div>
+          <div class="data-card data-card-c"><b>late_payments</b><span>0</span></div>
+          <div class="core-card">
+            <span class="core-label">DECISIÓN</span>
+            <strong>¿Conceder?</strong>
+            <div class="core-result"><i></i> APROBADO</div>
+          </div>
+          <div class="hero-note">Mismos datos.<br /><b>Dos paradigmas.</b></div>
+        </div>
+      </section>
+
+      <section class="lab-section" id="laboratorio">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow"><span></span> El experimento</p>
+            <h2>Dos flujos, una misma pregunta</h2>
+          </div>
+          <p>Predice si una solicitud de microcrédito será aprobada. La etiqueta real se reserva para evaluar ambos enfoques.</p>
+        </div>
+
+        <div class="dataset-ribbon">
+          <div class="dataset-title">
+            <span class="dataset-icon">▦</span>
+            <div><b>microcredit_classroom.csv</b><small>16 casos de evaluación · 5 variables · etiqueta: approved</small></div>
+          </div>
+          <div class="dataset-split"><span>MODELO</span><b>entrenado</b><i></i><span>TEST</span><b>16</b></div>
+          <button class="text-button" id="datasetToggle" type="button" aria-expanded="false">Ver dataset <span>⌄</span></button>
+        </div>
+
+        <div class="dataset-panel" id="datasetPanel" hidden>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>ID</th><th>Ingresos</th><th>Deuda</th><th>Empleo</th><th>Impagos</th><th>Ahorros</th><th>Real</th></tr></thead>
+              <tbody id="datasetBody"></tbody>
+            </table>
+          </div>
+          <p class="micro-note">Dataset sintético y deliberadamente pequeño: permite inspeccionar cada error, no solo el promedio.</p>
+        </div>
+
+        <div class="student-challenge">
+          <div class="challenge-title">
+            <span>RETO DEL ESTUDIANTE</span>
+            <h3>Acerca el prompt al modelo clásico sin perder respuestas evaluables.</h3>
+            <p>No buscas “ganar” al modelo: buscas demostrar qué cambia al modificar la instrucción.</p>
+          </div>
+          <ol>
+            <li><b>1</b><span><strong>Ejecuta</strong> ambos flujos</span></li>
+            <li><b>2</b><span><strong>Compara</strong> sus métricas</span></li>
+            <li><b>3</b><span><strong>Mejora</strong> el prompt</span></li>
+            <li><b>4</b><span><strong>Explica</strong> un error</span></li>
+          </ol>
+        </div>
+
+        <div class="comparison-grid">
+          <article class="workflow classic-workflow">
+            <div class="workflow-head">
+              <div class="number-badge">01</div>
+              <div><span class="workflow-kicker">FLUJO CLÁSICO</span><h3>pandas + scikit-learn</h3></div>
+              <span class="status-chip ready">● ENTRENADO</span>
+            </div>
+            <div class="pipeline" aria-label="Pipeline clásico">
+              <span>CSV</span><i>→</i><span>pandas</span><i>→</i><span>features</span><i>→</i><span>LogReg</span>
+            </div>
+            <div class="code-card" aria-label="Código Python del flujo clásico">
+              <div class="code-top"><span><i></i><i></i><i></i></span><b>train.py</b><small>Python</small></div>
+              <pre><code><span class="kw">X</span> = df[[<span class="str">"income"</span>, <span class="str">"debt_ratio"</span>, ...]]
+<span class="kw">y</span> = df[<span class="str">"approved"</span>]
+
+model = make_pipeline(
+    StandardScaler(),
+    LogisticRegression()
+)
+model.fit(X_train, y_train)</code></pre>
+            </div>
+            <div class="fixed-choices">
+              <span><b>Variables</b> definidas a priori</span>
+              <span><b>Salida</b> probabilidad + clase</span>
+              <span><b>Cambio</b> reentrenar el modelo</span>
+            </div>
+            <button class="secondary-button full" id="runClassic" type="button"><span>▶</span> Ejecutar modelo clásico</button>
+          </article>
+
+          <article class="workflow prompt-workflow">
+            <div class="workflow-head">
+              <div class="number-badge">02</div>
+              <div><span class="workflow-kicker">FLUJO CON PROMPTS</span><h3>instrucción + LLM</h3></div>
+              <span class="status-chip hybrid" title="La simulación está activa; el adaptador permite conectar un endpoint real.">◈ HÍBRIDO</span>
+            </div>
+            <div class="pipeline prompt-pipeline" aria-label="Pipeline con prompts">
+              <span>CSV</span><i>→</i><span>contexto</span><i>→</i><span>prompt</span><i>→</i><span>LLM</span>
+            </div>
+
+            <div class="prompt-controls">
+              <div class="engine-row">
+                <div><label>Motor de ejecución</label><small id="engineStatus">Simulación local · lista</small></div>
+                <div class="segmented engine-segmented" role="group" aria-label="Motor de ejecución">
+                  <button type="button" data-engine="local" class="active">Simulador</button>
+                  <button type="button" data-engine="remote">Endpoint LLM</button>
+                </div>
+              </div>
+              <div class="endpoint-panel" id="endpointPanel" hidden>
+                <label for="endpointUrl">Endpoint seguro del centro</label>
+                <input id="endpointUrl" type="url" placeholder="https://llm-proxy.universidad.es/classify" autocomplete="off" />
+                <small>Debe aceptar POST y devolver <code>{ predictions: [...] }</code>. No introduzcas claves API en el navegador.</small>
+              </div>
+              <label for="promptPreset">Estrategia de instrucción</label>
+              <div class="segmented" id="promptPreset" role="group" aria-label="Estrategia de instrucción">
+                <button type="button" data-preset="vague">Mínima</button>
+                <button type="button" data-preset="balanced" class="active">Con criterios</button>
+                <button type="button" data-preset="strict">Conservadora</button>
+              </div>
+              <label for="promptText">Prompt del sistema <span>editable</span></label>
+              <div class="prompt-editor">
+                <span class="line-number">1</span>
+                <textarea id="promptText" rows="7" spellcheck="false" aria-describedby="promptHint"></textarea>
+                <span class="token-count" id="tokenCount">0 palabras</span>
+              </div>
+              <p id="promptHint" class="sr-only">Edita la instrucción para cambiar cómo se clasifican las solicitudes.</p>
+              <div class="control-row">
+                <label class="switch-control"><input id="examplesToggle" type="checkbox" checked /><span></span><b>Incluir 2 ejemplos</b></label>
+                <label class="switch-control"><input id="schemaToggle" type="checkbox" checked /><span></span><b>Salida estructurada (JSON)</b></label>
+              </div>
+              <div class="json-explainer">
+                <span>{ }</span>
+                <p><b>¿Para qué sirve?</b> Obliga al LLM a devolver una etiqueta como <code>{"approved": true}</code>. Así el sistema puede leerla y calcular las métricas. Sin estructura, una respuesta razonable puede no ser evaluable.</p>
+              </div>
+              <div class="temperature-row">
+                <div class="temperature-heading">
+                  <label for="temperature">Temperatura <b id="tempValue">0.2</b></label>
+                  <span class="tooltip">
+                    <button class="tooltip-trigger" type="button" aria-label="Explicación de la temperatura" aria-describedby="temperatureHelp">?</button>
+                    <span class="tooltip-content" id="temperatureHelp" role="tooltip">Controla la variabilidad de las respuestas. Un valor bajo ofrece resultados más estables y reproducibles; uno alto introduce más diversidad y puede cambiar la clasificación entre ejecuciones. No representa la confianza del modelo.</span>
+                  </span>
+                </div>
+                <input id="temperature" type="range" min="0" max="10" value="2" aria-valuetext="0.2" />
+                <div class="temperature-scale"><span>Estable</span><span>Variable</span></div>
+              </div>
+            </div>
+            <button class="primary-button full" id="runPrompt" type="button"><span>✦</span> Ejecutar prompt <kbd>⌘↵</kbd></button>
+          </article>
+        </div>
+
+        <section class="results" id="results" aria-live="polite">
+          <div class="results-head">
+            <div><p class="eyebrow"><span></span> Resultados comparables</p><h2>¿Qué ha cambiado realmente?</h2></div>
+            <div class="result-actions">
+              <button class="text-button" id="resetButton" type="button">↺ Reiniciar</button>
+            </div>
+          </div>
+
+          <div class="metrics-table" role="table" aria-label="Comparación de métricas entre el modelo clásico y el prompt">
+            <div class="metrics-table-head" role="row">
+              <div role="columnheader">Métrica</div>
+              <div class="metric-column-title classic-column" role="columnheader"><i></i><span>Clásico<small>LogisticRegression</small></span></div>
+              <div class="metric-column-title prompt-column" role="columnheader"><i></i><span>Prompt<small id="promptMetricLabel">Con criterios</small></span></div>
+            </div>
+            <div id="metricRows" role="rowgroup"></div>
+          </div>
+
+          <div class="results-detail">
+            <div class="prediction-panel">
+              <div class="panel-head"><div><b>Predicciones, fila a fila</b><small>Selecciona una solicitud para explicar la decisión</small></div><span class="legend"><i class="correct"></i> acierto <i class="wrong"></i> error</span></div>
+              <div class="table-scroll">
+                <table class="prediction-table">
+                  <thead><tr><th>Solicitud</th><th>Real</th><th>Clásico</th><th>Prompt</th><th></th></tr></thead>
+                  <tbody id="predictionBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <aside class="explanation-panel" id="explanationPanel">
+            <span class="explanation-tag">EXPLICABILIDAD</span>
+              <h4>Selecciona una fila</h4>
+              <p>Compara una probabilidad numérica con una justificación en lenguaje natural.</p>
+              <div class="empty-illustration" aria-hidden="true"><span>?</span></div>
+            </aside>
+          </div>
+          <div class="parsing-warning" id="parsingWarning" hidden><span>!</span><p><b>Hay respuestas no interpretables.</b> Sin un esquema de salida, una respuesta fluida puede no convertirse en una predicción evaluable.</p></div>
+        </section>
+      </section>
+
+      <section class="teaching-section" id="docencia">
+        <div class="section-heading teaching-heading">
+          <div><p class="eyebrow"><span></span> Cierre de la actividad</p><h2>Tres ideas para llevarse</h2></div>
+          <p>No se trata de sustituir Python por prompts, sino de entender qué nueva capa de diseño, evaluación y riesgo aparece.</p>
+        </div>
+        <div class="solution-control">
+          <div><b>Solución docente</b><p>Muestra respuestas orientativas para conducir la discusión final.</p></div>
+          <button class="secondary-button" id="solutionToggle" type="button" aria-expanded="false" aria-controls="solutionAnswer1 solutionAnswer2 solutionAnswer3 teacherPlan">Mostrar solución</button>
+        </div>
+        <div class="lesson-grid">
+          <article>
+            <span>01</span><h3>La instrucción es parte del sistema</h3><p>Un pequeño cambio de criterio altera la frontera de decisión sin reentrenar pesos.</p><b>Pregunta: ¿es esto código, dato o configuración?</b>
+            <div class="teacher-answer solution-only" id="solutionAnswer1" hidden><strong>Respuesta orientativa</strong><p>El prompt es una <em>configuración ejecutable</em>, pero debería versionarse, revisarse y probarse como el código. Los ejemplos incluidos en el prompt funcionan además como datos.</p></div>
+          </article>
+          <article>
+            <span>02</span><h3>Evaluar sigue siendo imprescindible</h3><p>Una respuesta convincente no garantiza una clasificación correcta ni una salida procesable.</p><b>Pregunta: ¿qué métrica falta para desplegar?</b>
+            <div class="teacher-answer solution-only" id="solutionAnswer2" hidden><strong>Respuesta orientativa</strong><p>La primera es la <em>cobertura</em>: qué porcentaje de respuestas puede convertirse en una predicción evaluable. En un sistema real añadiríamos estabilidad entre ejecuciones, calibración, errores por subgrupos, latencia y coste.</p></div>
+          </article>
+          <article>
+            <span>03</span><h3>Los flujos pueden combinarse</h3><p>El modelo clásico aporta consistencia; el LLM, flexibilidad y explicación sobre casos nuevos.</p><b>Pregunta: ¿dónde pondrías supervisión humana?</b>
+            <div class="teacher-answer solution-only" id="solutionAnswer3" hidden><strong>Respuesta orientativa</strong><p>En salidas no interpretables, baja confianza, desacuerdo entre los dos flujos y decisiones de alto impacto. Esos casos deberían pasar a una cola de revisión, especialmente antes de rechazar una solicitud.</p></div>
+          </article>
+        </div>
+        <div class="teacher-plan solution-only" id="teacherPlan" hidden>
+          <b>Guion sugerido · 25 minutos</b>
+          <ol><li><span>5′</span>Formular hipótesis y leer el dataset.</li><li><span>8′</span>Ejecutar ambos flujos y revisar errores.</li><li><span>7′</span>Modificar prompt, esquema y temperatura.</li><li><span>5′</span>Debatir coste, reproducibilidad y gobernanza.</li></ol>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>© 2026 Carlos Á. Iglesias, Intelligent Systems Group, UPM.</span><span>PromptLab · Dataset sintético · Sin datos personales</span></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
