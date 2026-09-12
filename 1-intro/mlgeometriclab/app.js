@@ -259,11 +259,13 @@ function evaluate(){
     setMetricLabels('Inercia','Silhouette','');$('#metric1').textContent=inertia.toFixed(1);$('#metric2').textContent=sil.toFixed(2);$('#metric3').textContent='';
     $('#generalization').textContent='k-Means ignora las etiquetas. Comprueba si el clustering cambia aunque algunas etiquetas estén modificadas.';return;
   }
-  const tr=train(),te=points.filter(p=>!p.train&&p.trueC<2),M=classificationMetrics(te,'trueC'),MT=classificationMetrics(tr,'c');
+  const tr=points.filter(p=>p.train&&p.trueC<2),te=points.filter(p=>!p.train&&p.trueC<2),M=classificationMetrics(te,'trueC'),MT=classificationMetrics(tr,'trueC');
   setMetricLabels('F1','Precisión','Recall (exhaustividad)');
   $('#metric1').textContent=M.f1.toFixed(2);$('#metric2').textContent=M.precision.toFixed(2);$('#metric3').textContent=M.recall.toFixed(2);
   const gap=MT.f1-M.f1;
-  $('#generalization').textContent='F1 entrenamiento: '+MT.f1.toFixed(2)+' · F1 prueba: '+M.f1.toFixed(2)+(gap>.1?' → posible sobreajuste.':' → generalización razonable.');
+  const comparison='F1 entrenamiento (clase real): '+MT.f1.toFixed(2)+' · F1 prueba: '+M.f1.toFixed(2)+(gap>.1?' → posible sobreajuste.':' → generalización razonable.');
+  const noiseNote=labelNoise>0?' '+Math.round(labelNoise*100)+'% de las etiquetas de entrenamiento están modificadas: el modelo se entrena con ellas, pero estas métricas se calculan respecto a la clase real.':'';
+  $('#generalization').textContent=comparison+noiseNote;
 }
 
 function resetMetrics(){
