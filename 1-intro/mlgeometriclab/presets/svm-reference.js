@@ -135,9 +135,99 @@
     });
   }
 
+  function activateNoiseButton(rate) {
+    document.querySelectorAll('#labelNoiseChoices button').forEach(button => {
+      button.classList.toggle('active', Number(button.dataset.value) === rate);
+    });
+  }
+
+  function applyExactCorruption(indices) {
+    points.forEach(point => {
+      point.c = point.trueC;
+      point.corrupted = false;
+    });
+
+    const invalid = [];
+    indices.forEach(index => {
+      const point = points[index];
+      if (!point || !point.train) {
+        invalid.push(index);
+        return;
+      }
+      point.corrupted = true;
+      point.c = point.trueC < 2 ? 1 - point.trueC : (point.trueC + 1) % 3;
+    });
+
+    if (invalid.length) {
+      throw new Error('El preset SVM no coincide con el split esperado. Índices no válidos: ' + invalid.join(', '));
+    }
+  }
+
+  function loadSvmReferencePreset() {
+    const dataset = document.querySelector('#dataset');
+    if (!dataset || typeof makeData !== 'function') return;
+
+    dataset.value = preset.dataset.type;
+
+    // Regenera exactamente los mismos puntos y el mismo split estratificado.
+    seed = preset.dataset.seed;
+    labelNoise = 0;
+    makeData();
+
+    // Sustituye el muestreo aleatorio de ruido por los índices fijados en el preset.
+    labelNoise = preset.labelNoise.rate;
+    applyExactCorruption(preset.labelNoise.corruptedIndices);
+    activateNoiseButton(labelNoise);
+
+    // Configuración SVM de referencia.
+    params.kernel = preset.model.kernel;
+    params.gamma = preset.model.gamma;
+    params.C = preset.model.initialC;
+    showLabelErrors = true;
+
+    const toggle = document.querySelector('#toggleNoise');
+    if (toggle) toggle.textContent = 'Ocultar errores';
+
+    setModel('svm');
+    updateLabel();
+    fit();
+    evaluate();
+
+    const generalization = document.querySelector('#generalization');
+    if (generalization) {
+      generalization.textContent += ' Caso reproducible: seed 65 · RBF · γ=1 · compara C=0,1 → 1 → 10.';
+    }
+
+    const insight = document.querySelector('#insight');
+    if (insight) {
+      insight.textContent = 'Caso SVM de referencia cargado. Mantén RBF y γ=1; cambia solo C: 0,1 → 1 → 10. El modelo aprende con 25 etiquetas alteradas y se evalúa contra la clase real.';
+    }
+  }
+
+  function installPresetButton() {
+    const toolbar = document.querySelector('.toolbar');
+    if (!toolbar || document.querySelector('#svmReferencePreset')) return;
+
+    const newData = document.querySelector('#newData');
+    const button = document.createElement('button');
+    button.id = 'svmReferencePreset';
+    button.className = 'secondary-button';
+    button.type = 'button';
+    button.title = 'Carga el caso reproducible SVM con 30% de etiquetas incorrectas';
+    button.textContent = '◎ Caso SVM';
+    button.addEventListener('click', loadSvmReferencePreset);
+
+    if (newData) newData.insertAdjacentElement('afterend', button);
+    else toolbar.appendChild(button);
+  }
+
   global.SVM_REFERENCE_PRESET = preset;
   global.getSvmReferencePreset = clonePreset;
   global.getSvmReferenceExpected = getExpectedForC;
   global.validateSvmReferenceResult = validateResult;
   global.runSvmReferenceSequence = runReferenceSequence;
+  global.loadSvmReferencePreset = loadSvmReferencePreset;
+
+  // app.js se carga después de este archivo; instalamos el botón cuando toda la página está lista.
+  global.addEventListener('load', installPresetButton);
 })(typeof window !== 'undefined' ? window : globalThis);
