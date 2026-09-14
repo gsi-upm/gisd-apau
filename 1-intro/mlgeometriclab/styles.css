@@ -18,3 +18,4 @@ label,.noise-control small,.param-help,.controls>p:not(.eyebrow),.tip p,.tip b,.
 .viz-head{display:block}.viz-actions{text-align:left;margin-top:6px}.legend{display:block;white-space:normal;max-width:100%;overflow-wrap:anywhere;line-height:1.6}.legend>span{white-space:nowrap}
 
 .legend-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:3px 0}.legend-row>b{color:#53606e;font-weight:800;margin-right:2px}.legend-row span{white-space:nowrap}.legend-row i{font-style:normal}
+.split-buttons{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.split-buttons button{border:0;background:transparent;color:var(--teal);font-size:13px;font-weight:800;cursor:pointer;padding:3px 6px;border-radius:5px}.split-buttons button.active{background:var(--mint);color:var(--teal)}.split-buttons button:hover,.split-buttons button:focus-visible{color:var(--navy);outline:2px solid #7ed9c9;outline-offset:1px}
