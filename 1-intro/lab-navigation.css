@@ -1,0 +1,9 @@
+/* Shared return link for all laboratories. */
+header{flex-wrap:wrap;height:auto!important;min-height:72px}
+.labs-home{display:inline-flex;align-items:center;padding:8px 10px;border:1px solid #b8c5c9;border-radius:8px;color:#18365d;background:#fff;text-decoration:none;font:600 13px/1.5 system-ui,sans-serif;flex-shrink:0}
+.labs-home:hover{background:#d8f0e9}
+.labs-home:focus-visible{outline:2px solid #118b85;outline-offset:3px}
+.home-en{display:none}
+html[lang="en"] .home-es{display:none}
+html[lang="en"] .home-en{display:inline}
+@media(max-width:600px){.labs-home{order:10;margin:4px 0}}
