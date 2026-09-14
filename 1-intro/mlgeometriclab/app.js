@@ -96,4 +96,13 @@ function setLabelNoise(v){labelNoise=v;$$('#labelNoiseChoices button').forEach(b
 $$('#modelTabs button').forEach(b=>b.onclick=()=>setModel(b.dataset.model));$('#dataset').onchange=()=>{seed=4;makeData()};$('#newData').onclick=()=>{seed=Math.floor(Math.random()*1e6);makeData()};$('#run').onclick=evaluate;$$('#labelNoiseChoices button').forEach(b=>b.onclick=()=>setLabelNoise(Number(b.dataset.value)));$('#toggleNoise').onclick=()=>{showLabelErrors=!showLabelErrors;$('#toggleNoise').textContent=showLabelErrors?'Ocultar errores':'Mostrar errores';draw();setLegend()};
 const tooltip=$('#pointTooltip');plot.addEventListener('mousemove',e=>{if(!showLabelErrors){tooltip.hidden=true;return}const r=plot.getBoundingClientRect(),sx=plot.width/r.width,sy=plot.height/r.height,x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy;const p=points.find(p=>p.corrupted&&Math.hypot(mapX(p.x)-x,mapY(p.y)-y)<10);if(!p){tooltip.hidden=true;return}tooltip.hidden=false;tooltip.style.left=(e.clientX+12)+'px';tooltip.style.top=(e.clientY+12)+'px';tooltip.innerHTML='<b>Etiqueta modificada</b><br>Clase original: '+p.trueC+' → etiqueta usada: '+p.c});plot.addEventListener('mouseleave',()=>tooltip.hidden=true);
 function hero(){const c=$('#heroCanvas'),x=c.getContext('2d');for(let i=0;i<55;i++){const a=Math.random()*7,r=40+Math.random()*120;x.beginPath();x.arc(215+Math.cos(a)*r,180+Math.sin(a)*r,4,0,Math.PI*2);x.fillStyle=i%2?'#e87f44':'#225b9a';x.fill()}x.strokeStyle='#18365d';x.lineWidth=3;x.beginPath();x.moveTo(85,290);x.bezierCurveTo(180,80,250,320,350,70);x.stroke()}
+function loadChallenge(n){
+  if(n===4&&typeof loadSvmReferencePreset==='function'){loadSvmReferencePreset();return}
+  const config={1:['linear',0,'linreg'],2:['moons',.1,'knn'],3:['circles',0,'linreg'],5:['clusters',0,'kmeans']}[n];
+  if(!config)return;
+  $('#dataset').value=config[0];seed=4;labelNoise=config[1];params.k=n===2?5:params.k;params.clusters=n===5?3:params.clusters;
+  $$('[data-value]').forEach(b=>{if(b.closest('#labelNoiseChoices'))b.classList.toggle('active',Number(b.dataset.value)===labelNoise)});
+  makeData();setModel(config[2]);
+}
+$$('#challengeButtons button').forEach(b=>b.onclick=()=>loadChallenge(Number(b.dataset.challenge)));
 hero();makeData();setModel('linreg');
