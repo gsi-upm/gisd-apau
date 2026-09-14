@@ -16,3 +16,5 @@ label,.noise-control small,.param-help,.controls>p:not(.eyebrow),.tip p,.tip b,.
 
 /* Keep the chart title readable and let the visual key wrap inside the card. */
 .viz-head{display:block}.viz-actions{text-align:left;margin-top:6px}.legend{display:block;white-space:normal;max-width:100%;overflow-wrap:anywhere;line-height:1.6}.legend>span{white-space:nowrap}
+
+.legend-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:3px 0}.legend-row>b{color:#53606e;font-weight:800;margin-right:2px}.legend-row span{white-space:nowrap}.legend-row i{font-style:normal}
