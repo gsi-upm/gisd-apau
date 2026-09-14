@@ -228,6 +228,5 @@
   global.runSvmReferenceSequence = runReferenceSequence;
   global.loadSvmReferencePreset = loadSvmReferencePreset;
 
-  // app.js se carga después de este archivo; instalamos el botón cuando toda la página está lista.
-  global.addEventListener('load', installPresetButton);
+  // El caso se carga desde el botón del Reto 4, junto al resto de desafíos.
 })(typeof window !== 'undefined' ? window : globalThis);
