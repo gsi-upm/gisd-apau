@@ -214,7 +214,7 @@
     button.className = 'secondary-button';
     button.type = 'button';
     button.title = 'Carga el caso reproducible SVM con 30% de etiquetas incorrectas';
-    button.textContent = '◎ Caso SVM';
+    button.textContent = '◎ Reto 4 · SVM y ruido';
     button.addEventListener('click', loadSvmReferencePreset);
 
     if (newData) newData.insertAdjacentElement('afterend', button);
