@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "description": "Browser checks for the four bilingual teaching laboratories",
+  "scripts": {"test": "node interaction.cjs && node layout.cjs"},
+  "devDependencies": {"playwright": "1.62.1"}
+}

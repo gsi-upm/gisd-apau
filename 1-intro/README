@@ -1,1 +1,24 @@
-Intro to ML
+Laboratorios interactivos / Interactive laboratories
+
+Español e inglés disponibles con el selector de idioma de cada laboratorio.
+Spanish and English are available through each laboratory's language selector.
+
+Orden sugerido / Suggested order:
+1. PromptLab: promptlab/index.html
+2. ClassifierLab: classifierlab/index.html
+3. RegressionLab: regressionlab/index.html
+4. GeometricLab: mlgeometriclab/index.html
+
+Publicación / Published site:
+https://gsi-upm.github.io/gisd-apau/1-intro/promptlab/
+https://gsi-upm.github.io/gisd-apau/1-intro/classifierlab/
+https://gsi-upm.github.io/gisd-apau/1-intro/regressionlab/
+https://gsi-upm.github.io/gisd-apau/1-intro/mlgeometriclab/
+
+No build is required. Keep language.js beside the four laboratory directories.
+GitHub Pages publishes 1-intro through the existing pages.yml workflow.
+Changing language preserves the current experiment and edited user text.
+Classifier comparisons last until page reload. The simulations run locally;
+PromptLab only contacts an LLM endpoint when the user selects and runs it.
+
+Automated checks: ../tests/labs/README.md

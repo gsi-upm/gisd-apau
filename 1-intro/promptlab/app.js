@@ -50,9 +50,9 @@ function classicPrediction(row) {
 function inferPromptStyle(text) {
   const t = text.toLowerCase();
   let strictness = state.preset === "strict" ? 0.55 : state.preset === "vague" ? -0.3 : 0;
-  if (/conservador|solo si|ante señales|riesgo bajo|rechaza/.test(t)) strictness += 0.35;
-  if (/no rechaces automáticamente|conjuntamente|compensa|flexible/.test(t)) strictness -= 0.2;
-  const criteria = ["ingres", "deuda", "emple", "impago", "ahorro"].filter(k => t.includes(k)).length;
+  if (/conservador|solo si|ante señales|riesgo bajo|rechaza|conservative|only if|with conflicting signals|low risk|reject/.test(t)) strictness += 0.35;
+  if (/no rechaces automáticamente|conjuntamente|compensa|flexible|do not reject automatically|jointly|offset/.test(t)) strictness -= 0.2;
+  const criteria = [/ingres|income/, /deuda|debt/, /emple|employment/, /impago|missed payment/, /ahorro|saving/].filter(k => k.test(t)).length;
   return { strictness, criteria };
 }
 
@@ -114,7 +114,7 @@ function calculateMetrics(predictions) {
 }
 
 function renderDataset() {
-  $("#datasetBody").innerHTML = dataset.map(r => `<tr><td>${r.id}</td><td>€ ${r.income.toLocaleString("es-ES")}</td><td>${r.debt}%</td><td>${r.employment}</td><td>${r.late}</td><td>€ ${r.savings.toLocaleString("es-ES")}</td><td>${pill(r.approved)}</td></tr>`).join("");
+  $("#datasetBody").innerHTML = dataset.map(r => `<tr><td>${r.id}</td><td>€ ${r.income.toLocaleString(window.LabLanguage?.value === "en" ? "en-GB" : "es-ES")}</td><td>${r.debt}%</td><td>${r.employment}</td><td>${r.late}</td><td>€ ${r.savings.toLocaleString(window.LabLanguage?.value === "en" ? "en-GB" : "es-ES")}</td><td>${pill(r.approved)}</td></tr>`).join("");
 }
 
 function pill(value) {
@@ -125,10 +125,11 @@ function pill(value) {
 function renderComparisonMetrics() {
   const classic = calculateMetrics(state.classic);
   const prompt = calculateMetrics(state.prompt);
+  const english = window.LabLanguage?.value === "en";
   const metrics = [
-    ["Exactitud (<em>Accuracy</em>)", "Porcentaje total de aciertos", "accuracy"],
-    ["Precision", "De las aprobadas, cuántas eran correctas", "precision"],
-    ["Exhaustividad (<em>Recall</em>)", "Cuántas aprobadas reales detecta", "recall"],
+    [english ? "Accuracy" : "Exactitud (<em>Accuracy</em>)", "Porcentaje total de aciertos", "accuracy"],
+    [english ? "Precision" : "Precisión", "De las aprobadas, cuántas eran correctas", "precision"],
+    [english ? "Recall" : "Exhaustividad (<em>Recall</em>)", "Cuántas aprobadas reales detecta", "recall"],
     ["F1", "Equilibrio entre precision y recall", "f1"]
   ];
   $("#metricRows").innerHTML = metrics.map(([name, description, key]) => `
@@ -180,7 +181,7 @@ function selectRow(index) {
         : `El prompt produce un ${row.approved === 1 ? "falso negativo" : "falso positivo"}. El objetivo es identificar qué criterio de la instrucción ha dominado la decisión.`;
   $("#explanationPanel").innerHTML = `<span class="explanation-tag">${row.id} · ANÁLISIS DEL CASO</span><h4>${row.name}</h4>
     <div class="ground-truth">Etiqueta real ${pill(row.approved)}</div>
-    <p class="case-data">Ingresos €${row.income.toLocaleString("es-ES")}, deuda ${row.debt}%, empleo ${row.employment.toLowerCase()}, ${row.late} impagos y €${row.savings.toLocaleString("es-ES")} de ahorro.</p>
+    <p class="case-data">Ingresos €${row.income.toLocaleString(window.LabLanguage?.value === "en" ? "en-GB" : "es-ES")}, deuda ${row.debt}%, empleo ${row.employment.toLowerCase()}, ${row.late} impagos y €${row.savings.toLocaleString(window.LabLanguage?.value === "en" ? "en-GB" : "es-ES")} de ahorro.</p>
     <div class="decision-grid">
       <div class="decision-card classic-decision"><span>MODELO CLÁSICO</span><b>Predice: ${labelText(c?.label)}</b><small>${c ? `${(c.probability * 100).toFixed(0)}% de probabilidad de aprobación` : "Aún no ejecutado"}</small><span class="probability-bar"><i style="width:${c ? c.probability * 100 : 0}%"></i></span>${verdict(c)}</div>
       <div class="decision-card prompt-decision"><span>FLUJO CON PROMPT</span><b>Predice: ${labelText(p?.label)}</b><small>${p && p.label !== null ? `${(p.probability * 100).toFixed(0)}% de probabilidad de aprobación` : "Salida no interpretable"}</small><span class="probability-bar"><i style="width:${p ? p.probability * 100 : 0}%"></i></span>${verdict(p)}</div>

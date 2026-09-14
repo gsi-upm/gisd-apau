@@ -329,3 +329,8 @@ footer { border-top: 1px solid var(--line); padding: 20px max(24px, calc((100vw 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
+
+.topbar{height:auto;min-height:72px;flex-wrap:wrap;gap:20px;padding-top:10px;padding-bottom:10px}.topbar #language{min-width:0}.topbar nav{margin-left:auto}@media(max-width:600px){.topbar{padding:10px 14px;gap:10px}.topbar nav{order:4;width:100%;justify-content:center;gap:24px}.upm-logo{padding-left:8px}.upm-logo img{width:58px;height:38px}.brand{font-size:17px;gap:6px}.topbar #language{font-size:13px!important;max-width:130px!important;padding:6px!important}.workspace>*{min-width:0}.legend{white-space:normal}.challenge ol{grid-template-columns:1fr}.hero h1{font-size:48px;letter-spacing:-2px}}
+.results-detail>*,.comparison-grid>*{min-width:0}.table-scroll{max-width:100%}.metrics-table{overflow-x:auto}@media(max-width:600px){.topbar nav{display:flex}}
+
+[hidden]{display:none!important}
